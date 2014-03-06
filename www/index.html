@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+		<link rel="stylesheet" type="text/css" href="css/index.css" />
+		<link href="css/jquery.mobile.min.css" rel="stylesheet" type="text/css" />
+		<link href="css/app.min.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" language="javascript" src="js/jquery-1.9.1.min.js"></script>
+		<script type="text/javascript" language="javascript" src="js/jquery.mobile-1.3.1.min.js"></script>
+		<script type="text/javascript" language="javascript" src="js/settings.js"></script>
+		<script type="text/javascript" language="javascript" src="js/common.js"></script>
+        <script type="text/javascript" src="phonegap.js"></script>
+        <script type="text/javascript" src="PushNotification.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript">
+            app.initialize();
+        </script>
+        <title>Notify Me!</title>
+    </head>
+    <body>
+		<form id="form1">
+			<div data-role="page" id="mainpage" data-ajax="false">
+				<div id="divSplash" class="app">
+				</div>
+				<h1>My Notifications</h1>
+				<div id="deviceready" class="blink">
+					<p class="event listening">Connecting...</p>
+					<p class="event received">Welcome</p>
+				</div>
+                <div id="divAlerts" style="display:none"></div>
+			</div>
+			<div data-role="page" id="alertpage" data-ajax="false">
+			</div>
+		</form>
+    </body>
+</html>
