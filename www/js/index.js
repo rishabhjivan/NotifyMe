@@ -1,5 +1,7 @@
 var app = {
     RegID: "",
+	DeviceType: "",
+	DeviceId: "",
 	// Application Constructor
     initialize: function() {
         this.bindEvents();
@@ -26,7 +28,6 @@ var app = {
 
         listeningElement.setAttribute('style', 'display:none;');
         receivedElement.setAttribute('style', 'display:block;');
-        $("#divControls").show();
         var pushNotification = window.plugins.pushNotification;
         if (device.platform == 'android' || device.platform == 'Android') {
             pushNotification.register(this.successHandler, this.errorHandler, { "senderID": "480409925201", "ecb": "app.onNotificationGCM" });
@@ -41,9 +42,11 @@ var app = {
     tokenHandler: function (msg) {
         //console.log("Token Handler " + msg);
         RegID = msg;
-        $.post(WebServicesUrl + 'Device/', { Type: "iPhone", Id: msg },
+		DeviceType = "iPhone";
+        $.get(WebServicesUrl + 'Device/', { Type: "iPhone", Id: msg },
         function (data) {
-            //data.Id
+            if (data.OK == 1) ShowMain();
+			else ShowSignUp();
         }, 'json');
     },
     errorHandler:function(error) {
@@ -56,9 +59,11 @@ var app = {
                 if ( e.regid.length > 0 )
                 {
                     RegID = e.regid;
-					$.post(WebServicesUrl + 'Device/', { Type: "Android", Id: e.regid },
+					DeviceType = "Android";
+					$.get(WebServicesUrl + 'Device/', { Type: "Android", Id: e.regid },
 					function (data) {
-					    //data.Id
+						if (data.OK == 1) ShowMain();
+						else ShowSignUp();
 					}, 'json');
                 }
             break;
@@ -66,6 +71,7 @@ var app = {
             case 'message':
               // this is the actual push notification. its format depends on the data model from the push server
               //alert('message = '+e.message+' msgcnt = '+e.msgcnt);
+			  ShowMain();
             break;
  
             case 'error':
@@ -83,6 +89,7 @@ var app = {
         
         if (event.alert) {
             navigator.notification.alert(event.alert);
+			ShowMain();
         }
         if (event.badge) {
             pushNotification.setApplicationIconBadgeNumber(this.successHandler, this.errorHandler, event.badge);
@@ -93,3 +100,72 @@ var app = {
         }
     }
 };
+function ShowMain() {
+	$("#divSplash").hide();
+	$("#divSignUp").hide();
+	$("#divAlerts").show();
+	$.get(WebServicesUrl + 'MyMessages/', { Type: app.DeviceType, DeviceId: app.RegID },
+	function (data) {
+		if (data.OK == 1) ShowMessages(data.List); else AlertPopup(data.Msg);
+	}, 'json');
+}
+function ShowMessages(list) {
+	if (list.length > 0) {
+		var ul = $('<ul data-role="listview"></ul>');
+		$("#divList").empty().append(ul);
+		$.each(list, function(i,item) {
+			ul.append($('<li></li>').append($('<a id="lnkMsg-' + item.Id + '" href="#alertpage" data-transition="slide"></a>')
+			.append('<h2>' + item.From + '</h2><p>' + item.Subj + '</p>').on("click", function() { OpenMessage(item, item.Secure); })));
+		});
+	} else $("#divList").empty().append('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-btn-up-c"><div class="ui-btn-inner ui-li"><div class="ui-btn-text"><a href="javascript:;" class="ui-link-inherit">You have no notifications to show</a></div></div></li>');
+	$("#divList").trigger('create');
+}
+var MessageCache = new Object();
+function OpenMessage(item, secure) {
+	if (MessageCache[item.Id]) ShowMessage(item.Id);
+	else {
+		if (secure) var url = WebServicesSecureUrl; else var url = WebServicesUrl;
+		$.get(url + 'MyMessage/', { Type: app.DeviceType, DeviceId: app.RegID, Id: item.Id },
+		function (data) {
+			if (data.OK == 1) {item.Body = data.Body; MessageCache[item.Id] = item; ShowMessage(item.Id);}
+		}, 'json');
+	}
+}
+function ShowMessage(id) {
+	$("#msgBody").html(MessageCache[id].Body);
+	$("#msgSubj").html(MessageCache[id].Subj);
+	$("#msgFrom").html(MessageCache[id].From);
+}
+function ShowSignUp() {
+	$("#ulCountry").empty();
+	$.each(CountryObj, function(i, item) {
+		$("#ulCountry").append($('<li></li>').append($('<a href="#mainpage" data-direction="reverse" data-transition="slidedown"></a>').append(item.Name + ' (+' + item.Code + ')').on("click", function() {
+			$("#hidCountry").val(item.Code);
+			$("#lnkCountry .ui-btn-text").html(item.Name + ' (+' + item.Code + ')');
+		})));
+	});
+	$("#ulCountry").trigger('create');
+	$("#hidCountry").val("0");
+	$("#divSplash").hide();
+	$("#divAlerts").hide();
+	$("#divSignUp").show();
+}
+function SignUp() {
+	if ($("#hidCountry").val() == "" || $("#hidCountry").val() == "0") AlertPopup("Please select a country");
+	else if ($("#txtPhoneNumber").val() == "") AlertPopup("Please enter your mobile number");
+	else {
+		$.post(WebServicesUrl + 'Device/', { Type: app.DeviceType, Id: app.RegID, DialCode: $("#hidCountry").val(), Number: $("#txtPhoneNumber").val(), Promo: $("#chkPromo").is(":checked") },
+		function (data) {
+			if (data.OK == 1) ShowMain(data.Id);
+		}, 'json');
+	}
+}
+function TestRun() {
+	app.RegID = "ABC123";
+	app.DeviceType = "Test";
+	$.get(WebServicesUrl + 'Device/', { Type: "Test", Id: "ABC123" },
+	function (data) {
+		if (data.OK == 1) ShowMain();
+		else ShowSignUp();
+	}, 'json');
+}

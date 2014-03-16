@@ -5,24 +5,27 @@
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
-		<link rel="stylesheet" type="text/css" href="css/index.css" />
 		<link href="css/jquery.mobile.min.css" rel="stylesheet" type="text/css" />
 		<link href="css/app.min.css" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" type="text/css" href="css/index.css" />
+		<link rel="stylesheet" type="text/css" href="css/jquery.mobile.simpledialog.min.css" />
 		<script type="text/javascript" language="javascript" src="js/jquery-1.9.1.min.js"></script>
 		<script type="text/javascript" language="javascript" src="js/jquery.mobile-1.3.1.min.js"></script>
+		<script type="text/javascript" language="javascript" src="js/jquery.mobile.simpledialog.js"></script>
 		<script type="text/javascript" language="javascript" src="js/settings.js"></script>
 		<script type="text/javascript" language="javascript" src="js/common.js"></script>
         <script type="text/javascript" src="phonegap.js"></script>
         <script type="text/javascript" src="PushNotification.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript">
-            app.initialize();
+            //app.initialize();
+			TestRun();
         </script>
         <title>Notify Me!</title>
     </head>
     <body>
 		<form id="form1">
-			<div data-role="page" id="mainpage" data-ajax="false">
+			<div data-role="page" id="mainpage" data-ajax="false" data-theme="c">
 				<div id="divSplash" class="app">
 				</div>
 				<h1>My Notifications</h1>
@@ -30,9 +33,39 @@
 					<p class="event listening">Connecting...</p>
 					<p class="event received">Welcome</p>
 				</div>
-                <div id="divAlerts" style="display:none"></div>
+                <div id="divSignUp" style="display:none" class="inner-pad">
+					<label class="ui-form-label">Country:</label><br />
+					<a id="lnkCountry" href="#countrypage" data-role="button" data-icon="arrow-d" data-iconpos="right" data-transition="slideup">Select a Country</a>
+					<input id="hidCountry" type="hidden" value="0" />
+					<p></p>
+					<label class="ui-form-label">Mobile Number:</label><br />
+					<input type="text" id="txtPhoneNumber" data-theme="b" />
+					<p></p>
+					<input type="checkbox" id="chkPromo" checked="checked" /> <label for="chkPromo">Allow NotifyMe and/or any third party company to send me promotional messages</label>
+					<p></p>
+					<a href="javascript:SignUp();" data-role="button" data-icon="arrow-r" data-iconpos="right">Next</a>
+				</div>
+                <div id="divAlerts" style="display:none" class="inner-pad">
+					<div id="divList"></div>
+				</div>
 			</div>
 			<div data-role="page" id="alertpage" data-ajax="false">
+				<div class="inner-pad">
+					<li id="msgFrom" data-role="list-divider" class="ui-li ui-li-divider ui-bar-b ui-first-child"></li>
+					<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-btn-up-c"><div class="ui-btn-inner ui-li"><div class="ui-btn-text"><a href="javascript:;" class="ui-link-inherit">
+						<h2 id="msgSubj" class="ui-li-heading"></h2>
+						<p id="msgBody"><p>
+					</a></div></div></li>
+					<input id="hidMsgId" type="hidden" value="0" />
+					<a href="javascript:BlockSender();" data-role="button" data-icon="minus">Block Sender</a>
+					<a href="#mainpage" data-direction="reverse" data-role="button" data-theme="d" data-icon="arrow-l" 
+						data-iconpos="left" data-transition="slide">Back</a>
+				</div>
+			</div>
+			<div data-role="page" id="countrypage" data-cache="never" data-dom-cache="false" data-theme="a" data-ajax="false">
+                <ul id="ulCountry" data-role="listview" data-filter="true" data-filter-placeholder="Select a Country"></ul>
+				<a href="#mainpage" data-direction="reverse" data-role="button" data-theme="d" data-icon="arrow-d" 
+                    data-iconpos="left" data-transition="slidedown">Cancel</a>
 			</div>
 		</form>
     </body>
