@@ -41,8 +41,8 @@ var app = {
     },
     tokenHandler: function (msg) {
         //console.log("Token Handler " + msg);
-        RegID = msg;
-		DeviceType = "iPhone";
+        app.RegID = msg;
+		app.DeviceType = "iPhone";
         $.get(WebServicesUrl + 'Device/', { Type: "iPhone", Id: msg },
         function (data) {
             if (data.OK == 1) ShowMain();
@@ -58,8 +58,8 @@ var app = {
             case 'registered':
                 if ( e.regid.length > 0 )
                 {
-                    RegID = e.regid;
-					DeviceType = "Android";
+                    app.RegID = e.regid;
+					app.DeviceType = "Android";
 					$.get(WebServicesUrl + 'Device/', { Type: "Android", Id: e.regid },
 					function (data) {
 						if (data.OK == 1) ShowMain();
@@ -168,4 +168,8 @@ function TestRun() {
 		if (data.OK == 1) ShowMain();
 		else ShowSignUp();
 	}, 'json');
+}
+function ShowInfo() {
+	console.log(app.RegID);
+	console.log(app.DeviceType);
 }
