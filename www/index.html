@@ -28,12 +28,12 @@
 			<div data-role="page" id="mainpage" data-ajax="false" data-theme="c">
 				<div id="divSplash" class="app">
 				</div>
-				<h1>My Notifications</h1>
 				<div id="deviceready" class="blink">
 					<p class="event listening">Connecting...</p>
 					<p class="event received">Welcome</p>
 				</div>
                 <div id="divSignUp" style="display:none" class="inner-pad">
+					<div class="app"></div>
 					<label class="ui-form-label">Country:</label><br />
 					<a id="lnkCountry" href="#countrypage" data-role="button" data-icon="arrow-d" data-iconpos="right" data-transition="slideup">Select a Country</a>
 					<input id="hidCountry" type="hidden" value="0" />
@@ -45,8 +45,13 @@
 					<p></p>
 					<a href="javascript:SignUp();" data-role="button" data-icon="arrow-r" data-iconpos="right">Next</a>
 				</div>
-                <div id="divAlerts" style="display:none" class="inner-pad">
-					<div id="divList"></div>
+                <div id="divAlerts" style="display:none">
+					<div class="ui-bar ui-bar-a" style="padding:0px">
+						<div class="fright"><a href="javascript:ShowMain();" data-role="button" data-inline="true" data-mini="true" data-icon="refresh" data-icon-pos="right">Refresh</a></div>
+						<div class="clear"></div>
+					</div>
+					<div class="app"></div>
+					<div id="divList" class="inner-pad"></div>
 				</div>
 			</div>
 			<div data-role="page" id="alertpage" data-ajax="false">

@@ -5,6 +5,7 @@ var app = {
 	// Application Constructor
     initialize: function() {
         this.bindEvents();
+		//TestRun();
     },
     // Bind Event Listeners
     //
@@ -102,6 +103,7 @@ var app = {
 };
 function ShowMain() {
 	$("#divSplash").hide();
+	$("#deviceready").hide();
 	$("#divSignUp").hide();
 	$("#divAlerts").show();
 	$.get(WebServicesUrl + 'MyMessages/', { Type: app.DeviceType, DeviceId: app.RegID },
@@ -147,6 +149,7 @@ function ShowSignUp() {
 	$("#ulCountry").trigger('create');
 	$("#hidCountry").val("0");
 	$("#divSplash").hide();
+	$("#deviceready").hide();
 	$("#divAlerts").hide();
 	$("#divSignUp").show();
 }
