@@ -49,6 +49,6 @@
     <!-- <gap:splash gap:platform="blackberry" src="res/screen/blackberry/screen-225.png" />
     <gap:splash gap:platform="winphone" src="res/screen/windows-phone/screen-portrait.jpg" /> -->
     <gap:plugin name="com.phonegap.plugins.pushplugin" />
-    <plugin name="TelephoneNumber" value="com.simonmacdonald.cordova.plugins.TelephoneNumber"/>
+    <!-- <plugin name="TelephoneNumber" value="com.simonmacdonald.cordova.plugins.TelephoneNumber"/> -->
     <access origin="*" />
 </widget>

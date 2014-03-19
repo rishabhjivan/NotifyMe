@@ -27,13 +27,13 @@
     <body>
 		<form id="form1">
 			<div data-role="page" id="mainpage" data-ajax="false" data-theme="c">
-				<div id="divSplash" class="app">
+				<div id="divSplash" class="app screen-panel">
 				</div>
-				<div id="deviceready" class="blink">
+				<div id="deviceready" class="blink screen-panel">
 					<p class="event listening">Connecting...</p>
 					<p class="event received">Authenticating...</p>
 				</div>
-                <div id="divSignUp" style="display:none" class="inner-pad">
+                <div id="divSignUp" style="display:none" class="inner-pad screen-panel">
 					<div class="app"></div>
 					<label class="ui-form-label">Country:</label><br />
 					<a id="lnkCountry" href="#countrypage" data-role="button" data-icon="arrow-d" data-iconpos="right" data-transition="slideup">Select a Country</a>
@@ -46,7 +46,14 @@
 					<p></p>
 					<a href="javascript:SignUp();" data-role="button" data-icon="arrow-r" data-iconpos="right">Next</a>
 				</div>
-                <div id="divAlerts" style="display:none">
+                <div id="divActivate" style="display:none" class="inner-pad screen-panel">
+					<div class="app"></div>
+					<label class="ui-form-label">We have sent you an SMS with your activation PIN. Please enter the PIN below:</label><br />
+					<input type="password" id="txtActCode" data-theme="b" />
+					<p></p>
+					<a href="javascript:Activate();" data-role="button" data-icon="arrow-r" data-iconpos="right">Activate</a>
+				</div>
+                <div id="divAlerts" style="display:none" class="screen-panel">
 					<div class="ui-bar ui-bar-a" style="padding:0px">
 						<div class="fright"><a href="javascript:ShowMain();" data-role="button" data-inline="true" data-mini="true" data-icon="refresh" data-icon-pos="right">Refresh</a></div>
 						<div class="clear"></div>

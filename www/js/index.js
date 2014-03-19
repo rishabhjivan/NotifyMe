@@ -44,11 +44,7 @@ var app = {
         //console.log("Token Handler " + msg);
         app.RegID = msg;
 		app.DeviceType = "iPhone";
-        $.get(WebServicesUrl + 'Device/', { Type: "iPhone", Id: msg },
-        function (data) {
-            if (data.OK == 1) ShowMain();
-			else ShowSignUp();
-        }, 'json');
+		CheckDevice();
     },
     errorHandler:function(error) {
         //alert(error);
@@ -61,11 +57,7 @@ var app = {
                 {
                     app.RegID = e.regid;
 					app.DeviceType = "Android";
-					$.get(WebServicesUrl + 'Device/', { Type: "Android", Id: e.regid },
-					function (data) {
-						if (data.OK == 1) ShowMain();
-						else ShowSignUp();
-					}, 'json');
+					CheckDevice();
                 }
             break;
  
@@ -101,11 +93,16 @@ var app = {
         }
     }
 };
+function CheckDevice() {
+	$.get(WebServicesUrl + 'Device/', { Type: app.DeviceType, Id: app.RegID },
+	function (data) {
+		if (data.OK == 1) {
+			if (data.Active) ShowMain(); else ShowActivate();
+		} else ShowSignUp();
+	}, 'json');
+}
 function ShowMain() {
-	$("#divSplash").hide();
-	$("#deviceready").hide();
-	$("#divSignUp").hide();
-	$("#divAlerts").show();
+	ShowPanel("divAlerts");
 	$.get(WebServicesUrl + 'MyMessages/', { Type: app.DeviceType, DeviceId: app.RegID },
 	function (data) {
 		if (data.OK == 1) ShowMessages(data.List); else AlertPopup(data.Msg);
@@ -125,7 +122,7 @@ function ShowMessages(list) {
 			ul.append($('<li></li>').append($('<a id="lnkMsg-' + item.Id + '" href="#alertpage" data-transition="slide"></a>')
 			.append('<h2>' + item.From + '</h2><p>' + item.Subj + '</p>').on("click", function() { OpenMessage(item, item.Secure); })));
 		});
-	} else $("#divList").empty().append('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-btn-up-c"><div class="ui-btn-inner ui-li"><div class="ui-btn-text"><a href="javascript:;" class="ui-link-inherit wrap-text">You have no new notifications to show</a></div></div></li>');
+	} else $("#divList").empty().append('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-btn-up-c"><div class="ui-btn-inner ui-li"><div class="ui-btn-text"><a href="javascript:;" class="ui-link-inherit wrap-text" style="text-align:center">You have no new notifications to show</a></div></div></li>');
 	$("#divList").trigger('create');
 }
 var MessageCache = new Object();
@@ -161,10 +158,7 @@ function ShowSignUp() {
 	}, function() {
 		$("#txtPhoneNumber").val("");
 	});*/
-	$("#divSplash").hide();
-	$("#deviceready").hide();
-	$("#divAlerts").hide();
-	$("#divSignUp").show();
+	ShowPanel("divSignUp");
 }
 function SignUp() {
 	if ($("#hidCountry").val() == "" || $("#hidCountry").val() == "0") AlertPopup("Please select a country");
@@ -172,20 +166,33 @@ function SignUp() {
 	else {
 		$.post(WebServicesUrl + 'Device/', { Type: app.DeviceType, Id: app.RegID, DialCode: $("#hidCountry").val(), Number: $("#txtPhoneNumber").val(), Promo: $("#chkPromo").is(":checked") },
 		function (data) {
-			if (data.OK == 1) ShowMain(data.Id);
+			if (data.OK == 1) ShowActivate();
+		}, 'json');
+	}
+}
+function ShowActivate() {
+	ShowPanel("divActivate");
+}
+function Activate() {
+	if ($("#txtActCode").val() == "") AlertPopup("Please enter the activation PIN");
+	else {
+		$.post(WebServicesUrl + 'Device/Activate', { Type: app.DeviceType, Id: app.RegID, PIN: $("#txtActCode").val() },
+		function (data) {
+			if (data.OK == 1) ShowMain();
+			else AlertPopup("The activation PIN entered is incorrect. Please try again.");
 		}, 'json');
 	}
 }
 function TestRun() {
 	app.RegID = "ABC123";
 	app.DeviceType = "Test";
-	$.get(WebServicesUrl + 'Device/', { Type: "Test", Id: "ABC123" },
-	function (data) {
-		if (data.OK == 1) ShowMain();
-		else ShowSignUp();
-	}, 'json');
+	CheckDevice();
 }
 function ShowInfo() {
 	console.log(app.RegID);
 	console.log(app.DeviceType);
+}
+function ShowPanel(panel) {
+	$(".screen-panel").hide();
+	$("#" + panel).show();
 }
