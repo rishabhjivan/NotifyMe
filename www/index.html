@@ -19,7 +19,6 @@
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript">
             app.initialize();
-			//TestRun();
         </script>
         <title>Notify Me!</title>
     </head>
@@ -30,7 +29,7 @@
 				</div>
 				<div id="deviceready" class="blink">
 					<p class="event listening">Connecting...</p>
-					<p class="event received">Welcome</p>
+					<p class="event received">Authenticating...</p>
 				</div>
                 <div id="divSignUp" style="display:none" class="inner-pad">
 					<div class="app"></div>
@@ -63,14 +62,15 @@
 					</a></div></div></li>
 					<input id="hidMsgId" type="hidden" value="0" />
 					<a href="javascript:BlockSender();" data-role="button" data-icon="minus">Block Sender</a>
-					<a href="#mainpage" data-direction="reverse" data-role="button" data-theme="d" data-icon="arrow-l" 
+					<a href="javascript:HistoryPrev();" data-direction="reverse" data-role="button" data-theme="d" data-icon="arrow-l" 
 						data-iconpos="left" data-transition="slide">Back</a>
 				</div>
 			</div>
 			<div data-role="page" id="countrypage" data-cache="never" data-dom-cache="false" data-theme="a" data-ajax="false">
+				<div style="padding-top:16px">
                 <ul id="ulCountry" data-role="listview" data-filter="true" data-filter-placeholder="Select a Country"></ul>
-				<a href="#mainpage" data-direction="reverse" data-role="button" data-theme="d" data-icon="arrow-d" 
-                    data-iconpos="left" data-transition="slidedown">Cancel</a>
+				<a href="javascript:HistoryPrev();" data-direction="reverse" data-role="button" data-theme="d" data-icon="arrow-d" 
+                    data-iconpos="left" data-transition="slidedown">Cancel</a></div>
 			</div>
 		</form>
     </body>

@@ -6,6 +6,11 @@ $(document).bind("mobileinit", function () {
 function NavigateTo(url) {
     location.replace(url.replace("~/", WebServicesUrl));
 }
+function ClearHistory() {
+	$.mobile.urlHistory.clearForward();
+	$.mobile.urlHistory.stack = $.mobile.urlHistory.stack.slice( 0, $.mobile.urlHistory.activeIndex - 1 );
+}
+function HistoryPrev() {history.back();}
 $.fn.Feedback = function (msg,type) {
     var container = $(this);
     if (type == "Success") { var color = "Green"; var imgsrc = "check"; }

@@ -4,8 +4,8 @@ var app = {
 	DeviceId: "",
 	// Application Constructor
     initialize: function() {
-        this.bindEvents();
-		//TestRun();
+        //this.bindEvents();
+		TestRun();
     },
     // Bind Event Listeners
     //
@@ -141,9 +141,10 @@ function ShowMessage(id) {
 function ShowSignUp() {
 	$("#ulCountry").empty();
 	$.each(CountryObj, function(i, item) {
-		$("#ulCountry").append($('<li></li>').append($('<a href="#mainpage" data-direction="reverse" data-transition="slidedown"></a>').append(item.Name + ' (+' + item.Code + ')').on("click", function() {
+		$("#ulCountry").append($('<li></li>').append($('<a href="javascript:;" data-direction="reverse" data-transition="slidedown"></a>').append(item.Name + ' (+' + item.Code + ')').on("click", function() {
 			$("#hidCountry").val(item.Code);
 			$("#lnkCountry .ui-btn-text").html(item.Name + ' (+' + item.Code + ')');
+			HistoryPrev();
 		})));
 	});
 	$("#ulCountry").trigger('create');
