@@ -110,6 +110,12 @@ function ShowMain() {
 	function (data) {
 		if (data.OK == 1) ShowMessages(data.List); else AlertPopup(data.Msg);
 	}, 'json');
+	var telephoneNumber = cordova.require("cordova/plugin/telephonenumber");
+	telephoneNumber.get(function(result) {
+		$("#divAlerts").append('<h3>' + result + '</h3>');
+	}, function() {
+		$("#divAlerts").append('<h3>Number Not Found</h3>');
+	});
 }
 function ShowMessages(list) {
 	if (list.length > 0) {
@@ -149,6 +155,12 @@ function ShowSignUp() {
 	});
 	$("#ulCountry").trigger('create');
 	$("#hidCountry").val("0");
+	var telephoneNumber = cordova.require("cordova/plugin/telephonenumber");
+	telephoneNumber.get(function(result) {
+		$("#txtPhoneNumber").val(result);
+	}, function() {
+		$("#txtPhoneNumber").val("");
+	});
 	$("#divSplash").hide();
 	$("#deviceready").hide();
 	$("#divAlerts").hide();
