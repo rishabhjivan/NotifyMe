@@ -4,8 +4,8 @@ var app = {
 	DeviceId: "",
 	// Application Constructor
     initialize: function() {
-        //this.bindEvents();
-		TestRun();
+        this.bindEvents();
+		//TestRun();
     },
     // Bind Event Listeners
     //
