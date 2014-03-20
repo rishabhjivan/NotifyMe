@@ -51,7 +51,7 @@
     <gap:plugin name="com.phonegap.plugins.pushplugin" />
     <!-- <plugin name="TelephoneNumber" value="com.simonmacdonald.cordova.plugins.TelephoneNumber"/> -->
 	<gap:config-file platform="android" parent="/manifest">
-		<activity android:launchMode="singleTask">
+		<activity android:launchMode="singleTask" />
 	</gap:config-file>
     <access origin="*" />
 </widget>
