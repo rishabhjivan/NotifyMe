@@ -2,6 +2,7 @@ var app = {
     RegID: "",
 	DeviceType: "",
 	DeviceId: "",
+	SecretKey: "",
 	// Application Constructor
     initialize: function() {
         this.bindEvents();
@@ -94,16 +95,20 @@ var app = {
     }
 };
 function CheckDevice() {
-	$.get(WebServicesUrl + 'Device/', { Type: app.DeviceType, Id: app.RegID },
+	$.get(WebServicesSecureUrl + 'Device/', { Type: app.DeviceType, Id: app.RegID },
 	function (data) {
 		if (data.OK == 1) {
-			if (data.Active) ShowMain(); else ShowActivate();
+			if (data.Active) {
+				app.SecretKey = data.Key;
+				app.DeviceId = data.Id;
+				ShowMain();
+			} else ShowActivate();
 		} else ShowSignUp();
 	}, 'json');
 }
 function ShowMain() {
 	ShowPanel("divAlerts");
-	$.get(WebServicesUrl + 'MyMessages/', { Type: app.DeviceType, DeviceId: app.RegID },
+	$.get(WebServicesUrl + 'MyMessages/', { DeviceId: app.DeviceId, Key: GetTimestampHash(app.SecretKey) },
 	function (data) {
 		if (data.OK == 1) ShowMessages(data.List); else AlertPopup(data.Msg);
 	}, 'json');
@@ -119,8 +124,11 @@ function ShowMessages(list) {
 		var ul = $('<ul data-role="listview"></ul>');
 		$("#divList").empty().append(ul);
 		$.each(list, function(i,item) {
-			ul.append($('<li></li>').append($('<a id="lnkMsg-' + item.Id + '" href="#alertpage" data-transition="slide"></a>')
-			.append('<h2>' + item.From + '</h2><p>' + item.Subj + '</p>').on("click", function() { OpenMessage(item, item.Secure); })));
+			if (item.Read) var h2Class = ' class="message-read"'; else var h2Class = '';
+			var linkContent = '<h2' + h2Class + '>' + item.From + '</h2><p>' + item.Subj + '</p>';
+			if (!item.Read) linkContent += '<span class="ui-li-count">New!</span>';
+			ul.append($('<li id="liMsg-' + item.Id + '"></li>').append($('<a id="lnkMsg-' + item.Id + '" href="#alertpage" data-transition="slide"></a>')
+			.append(linkContent).on("click", function() { OpenMessage(item, item.Secure); })));
 		});
 	} else $("#divList").empty().append('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-btn-up-c"><div class="ui-btn-inner ui-li"><div class="ui-btn-text"><a href="javascript:;" class="ui-link-inherit wrap-text" style="text-align:center">You have no new notifications to show</a></div></div></li>');
 	$("#divList").trigger('create');
@@ -129,10 +137,15 @@ var MessageCache = new Object();
 function OpenMessage(item, secure) {
 	if (MessageCache[item.Id]) ShowMessage(item.Id);
 	else {
+		$("#msgBody").html("");$("#msgSubj").html("");$("#msgFrom").html("");$("#hidMsgId").val("");
 		if (secure) var url = WebServicesSecureUrl; else var url = WebServicesUrl;
-		$.get(url + 'MyMessage/', { Type: app.DeviceType, DeviceId: app.RegID, Id: item.Id },
+		$.get(url + 'MyMessage/', { DeviceId: app.DeviceId, Key: GetTimestampHash(app.SecretKey), Id: item.Id },
 		function (data) {
-			if (data.OK == 1) {item.Body = data.Body; MessageCache[item.Id] = item; ShowMessage(item.Id);}
+			if (data.OK == 1) {
+				$("#lnkMsg-" + item.Id).find('h2').addClass('message-read');
+				$("#lnkMsg-" + item.Id).find('span.ui-li-count').remove();
+				item.Body = data.Body; MessageCache[item.Id] = item; ShowMessage(item.Id);
+			}
 		}, 'json');
 	}
 }
@@ -140,6 +153,31 @@ function ShowMessage(id) {
 	$("#msgBody").html(MessageCache[id].Body);
 	$("#msgSubj").html(MessageCache[id].Subj);
 	$("#msgFrom").html(MessageCache[id].From);
+	$("#hidMsgId").val(id);
+}
+function ArchiveMsg() {
+	var id = $("#hidMsgId").val();
+	if (id != "") {
+		$.post(WebServicesUrl + 'MyMessage/Archive', { DeviceId: app.DeviceId, Key: GetTimestampHash(app.SecretKey), Id: id },
+		function (data) {
+			if (data.OK == 1) {
+				$("#liMsg-" + id).remove();
+				$("#msgBody").html("");$("#msgSubj").html("");$("#msgFrom").html("");$("#hidMsgId").val("");
+				HistoryPrev();
+			}
+		}, 'json');
+	}
+}
+function BlockSender() {
+	if ($("#hidMsgId").val() != "") {
+		$.post(WebServicesUrl + 'MyMessage/Block', { DeviceId: app.DeviceId, Key: GetTimestampHash(app.SecretKey), Id: $("#hidMsgId").val() },
+		function (data) {
+			if (data.OK == 1) {
+				$("#msgBody").html("");$("#msgSubj").html("");$("#msgFrom").html("");$("#hidMsgId").val("");
+				HistoryPrev();
+			}
+		}, 'json');
+	}
 }
 function ShowSignUp() {
 	$("#ulCountry").empty();
@@ -164,7 +202,7 @@ function SignUp() {
 	if ($("#hidCountry").val() == "" || $("#hidCountry").val() == "0") AlertPopup("Please select a country");
 	else if ($("#txtPhoneNumber").val() == "") AlertPopup("Please enter your mobile number");
 	else {
-		$.post(WebServicesUrl + 'Device/', { Type: app.DeviceType, Id: app.RegID, DialCode: $("#hidCountry").val(), Number: $("#txtPhoneNumber").val(), Promo: $("#chkPromo").is(":checked") },
+		$.post(WebServicesSecureUrl + 'Device/', { Type: app.DeviceType, Id: app.RegID, DialCode: $("#hidCountry").val(), Number: $("#txtPhoneNumber").val(), Promo: $("#chkPromo").is(":checked") },
 		function (data) {
 			if (data.OK == 1) ShowActivate();
 		}, 'json');
@@ -176,7 +214,7 @@ function ShowActivate() {
 function Activate() {
 	if ($("#txtActCode").val() == "") AlertPopup("Please enter the activation PIN");
 	else {
-		$.post(WebServicesUrl + 'Device/Activate', { Type: app.DeviceType, Id: app.RegID, PIN: $("#txtActCode").val() },
+		$.post(WebServicesSecureUrl + 'Device/Activate', { Type: app.DeviceType, Id: app.RegID, PIN: $("#txtActCode").val() },
 		function (data) {
 			if (data.OK == 1) ShowMain();
 			else AlertPopup("The activation PIN entered is incorrect. Please try again.");

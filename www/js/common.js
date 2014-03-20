@@ -36,6 +36,12 @@ function AlertPopup(msg) {
         'buttons': btn
     });
 }
+function GetTimestampHash(secretKey) {
+	var t = new Date().getTime();
+	var str = secretKey + "-" + t;
+	var hash = CryptoJS.MD5(str);
+	return t + "|" + hash.toString();
+}
 var CountryObj = {
 AD:{Key:"AD",Name:"Andorra",Code:376},
 AE:{Key:"AE",Name:"United Arab Emirates",Code:971},

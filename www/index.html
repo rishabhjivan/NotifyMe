@@ -18,6 +18,7 @@
         <script type="text/javascript" src="PushNotification.js"></script>
 		<!-- <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
 		<script type="text/javascript" charset="utf-8" src="js/telephonenumber.js"></script> -->
+        <script type="text/javascript" src="js/md5.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript">
             app.initialize();
@@ -70,6 +71,7 @@
 						<p id="msgBody"><p>
 					</a></div></div></li>
 					<input id="hidMsgId" type="hidden" value="0" />
+					<a href="javascript:ArchiveMsg();" data-role="button" data-icon="delete">Archive Message</a>
 					<a href="javascript:BlockSender();" data-role="button" data-icon="minus">Block Sender</a>
 					<a href="javascript:HistoryPrev();" data-direction="reverse" data-role="button" data-theme="d" data-icon="arrow-l" 
 						data-iconpos="left" data-transition="slide">Back</a>

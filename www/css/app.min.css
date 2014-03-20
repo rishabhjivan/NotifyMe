@@ -16,3 +16,4 @@ a.ui-link-inherit{text-decoration:none !important;}.ui-btn-active{border:1px sol
 .fleft { float: left; }.fright { float: right; }.clear { clear: both; }
 .wrap-text{overflow:auto!important;white-space:normal!important}
 .btn-wrap-text .ui-btn-inner{overflow:auto!important;white-space:normal!important}
+.message-read{font-weight:normal}
