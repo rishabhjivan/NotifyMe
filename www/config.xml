@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.notifyme" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget id="com.notifyme" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
     <name>Notify Me!</name>
     <description>
         Notifications for anything you are signed up with
@@ -50,5 +50,8 @@
     <gap:splash gap:platform="winphone" src="res/screen/windows-phone/screen-portrait.jpg" /> -->
     <gap:plugin name="com.phonegap.plugins.pushplugin" />
     <!-- <plugin name="TelephoneNumber" value="com.simonmacdonald.cordova.plugins.TelephoneNumber"/> -->
+	<gap:config-file platform="android" parent="/manifest">
+		<activity android:launchMode="singleTask">
+	</gap:config-file>
     <access origin="*" />
 </widget>
